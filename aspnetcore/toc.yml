@@ -344,6 +344,8 @@
               uid: blazor/components/event-handling
             - name: ライフサイクル
               uid: blazor/components/lifecycle
+            - name: 表示
+              uid: blazor/components/rendering
             - name: コンポーネントの仮想化
               uid: blazor/components/virtualization
             - name: テンプレート コンポーネント
@@ -970,8 +972,29 @@
           displayName: 'deploy, publish'
           uid: host-and-deploy/iis/protocols
     - name: Kestrel
-      uid: fundamentals/servers/kestrel
       displayName: 'deploy, publish, server'
+      items:
+        - name: 概要
+          displayName: 'deploy, publish, server'
+          uid: fundamentals/servers/kestrel
+        - name: エンドポイント
+          displayName: 'deploy, publish, server'
+          uid: fundamentals/servers/kestrel/endpoints
+        - name: オプション
+          displayName: 'deploy, publish, server'
+          uid: fundamentals/servers/kestrel/options
+        - name: HTTP/2
+          displayName: 'deploy, publish, server'
+          uid: fundamentals/servers/kestrel/http2
+        - name: リバース プロキシを使用する場合
+          displayName: 'deploy, publish, server'
+          uid: fundamentals/servers/kestrel/when-to-use-a-reverse-proxy
+        - name: ホスト フィルタリング
+          displayName: 'deploy, publish, server'
+          uid: fundamentals/servers/kestrel/host-filtering
+        - name: 要求のドレイン
+          displayName: 'deploy, publish, server'
+          uid: fundamentals/servers/kestrel/request-draining
     - name: HTTP.sys
       displayName: 'deploy, publish, server'
       uid: fundamentals/servers/httpsys
