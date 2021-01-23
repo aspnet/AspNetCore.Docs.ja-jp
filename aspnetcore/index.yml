@@ -10,12 +10,12 @@ metadata:
   author: WadePickett
   ms.author: wpickett
   ms.date: 06/05/2020
-  ms.openlocfilehash: d01cb4dee4c7539c0337343615a259fc7346eb6a
-  ms.sourcegitcommit: 24106b7ffffc9fff410a679863e28aeb2bbe5b7e
+  ms.openlocfilehash: 3d50ae8d0c1bf2bfdf6fbdfb187f1d6c95dca5cc
+  ms.sourcegitcommit: da5a5bed5718a9f8db59356ef8890b4b60ced6e9
   ms.translationtype: HT
   ms.contentlocale: ja-JP
-  ms.lasthandoff: 09/17/2020
-  ms.locfileid: "90722796"
+  ms.lasthandoff: 01/22/2021
+  ms.locfileid: "98710454"
 highlightedContent:
   items:
   - title: 任意のプラットフォームに 5 分で ASP.NET Core アプリを作成する
@@ -109,7 +109,7 @@ conceptualContent:
     - url: mvc/overview.md
       itemType: overview
       text: 概要
-    - url: tutorials/first-mvc-app/index.md
+    - url: tutorials/first-mvc-app/start-mvc.md
       itemType: get-started
       text: 最初の ASP.NET Core MVC アプリを作成する
     - url: mvc/views/overview.md
