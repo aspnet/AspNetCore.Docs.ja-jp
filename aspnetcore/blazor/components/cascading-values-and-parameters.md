@@ -5,7 +5,7 @@ description: 先祖のコンポーネントから子孫のコンポーネント�
 monikerRange: '>= aspnetcore-3.1'
 ms.author: riande
 ms.custom: mvc
-ms.date: 07/06/2020
+ms.date: 02/02/2021
 no-loc:
 - appsettings.json
 - ASP.NET Core Identity
@@ -19,105 +19,81 @@ no-loc:
 - Razor
 - SignalR
 uid: blazor/components/cascading-values-and-parameters
-ms.openlocfilehash: 56d70cea50a3a913b4483f6ea488438269aa58fe
-ms.sourcegitcommit: 3593c4efa707edeaaceffbfa544f99f41fc62535
+ms.openlocfilehash: 1fb9d75ca1613a7098840efd3ecb86ee90f4064c
+ms.sourcegitcommit: 1166b0ff3828418559510c661e8240e5c5717bb7
 ms.translationtype: HT
 ms.contentlocale: ja-JP
-ms.lasthandoff: 01/04/2021
-ms.locfileid: "94507981"
+ms.lasthandoff: 02/12/2021
+ms.locfileid: "100280243"
 ---
-# <a name="aspnet-core-no-locblazor-cascading-values-and-parameters"></a><span data-ttu-id="8e10b-103">ASP.NET Core Blazor の値とパラメーターのカスケード</span><span class="sxs-lookup"><span data-stu-id="8e10b-103">ASP.NET Core Blazor cascading values and parameters</span></span>
+# <a name="aspnet-core-blazor-cascading-values-and-parameters"></a><span data-ttu-id="a5008-103">ASP.NET Core Blazor の値とパラメーターのカスケード</span><span class="sxs-lookup"><span data-stu-id="a5008-103">ASP.NET Core Blazor cascading values and parameters</span></span>
 
-<span data-ttu-id="8e10b-104">作成者: [Luke Latham](https://github.com/guardrex)、[Daniel Roth](https://github.com/danroth27)</span><span class="sxs-lookup"><span data-stu-id="8e10b-104">By [Luke Latham](https://github.com/guardrex) and [Daniel Roth](https://github.com/danroth27)</span></span>
+<span data-ttu-id="a5008-104">"*カスケード値とパラメーター*" の使用は、コンポーネント階層で先祖コンポーネントから下位の任意の数の子孫コンポーネントにデータをフローさせる便利な方法です。</span><span class="sxs-lookup"><span data-stu-id="a5008-104">*Cascading values and parameters* provide a convienent way to flow data down a component hierarchy from an ancestor component to any number of decendent components.</span></span> <span data-ttu-id="a5008-105">カスケード値およびパラメーターでは、[コンポーネント パラメーター](xref:blazor/components/index#component-parameters)とは異なり、データが使用される各子孫コンポーネントに属性を割り当てる必要がありません。</span><span class="sxs-lookup"><span data-stu-id="a5008-105">Unlike [Component parameters](xref:blazor/components/index#component-parameters), cascading values and parameters don't require an attribute assignment for each descendent component where the data is consumed.</span></span> <span data-ttu-id="a5008-106">また、カスケード値とパラメーターを使用すると、コンポーネント階層全体でコンポーネントを相互連携させることができます。</span><span class="sxs-lookup"><span data-stu-id="a5008-106">Cascading values and parameters also allow components to coordinate with each other across a component hierarchy.</span></span>
 
-<span data-ttu-id="8e10b-105">[サンプル コードを表示またはダウンロード](https://github.com/dotnet/AspNetCore.Docs/tree/master/aspnetcore/blazor/common/samples/)します ([ダウンロード方法](xref:index#how-to-download-a-sample))。</span><span class="sxs-lookup"><span data-stu-id="8e10b-105">[View or download sample code](https://github.com/dotnet/AspNetCore.Docs/tree/master/aspnetcore/blazor/common/samples/) ([how to download](xref:index#how-to-download-a-sample))</span></span>
+## <a name="cascadingvalue-component"></a><span data-ttu-id="a5008-107">`CascadingValue` コンポーネント</span><span class="sxs-lookup"><span data-stu-id="a5008-107">`CascadingValue` component</span></span>
 
-<span data-ttu-id="8e10b-106">一部のシナリオでは、特に複数のコンポーネント レイヤーがある場合に、[コンポーネント パラメーター](xref:blazor/components/index#component-parameters)を使用して、先祖コンポーネントから子孫コンポーネントにデータをフローすることが不便な場合があります。</span><span class="sxs-lookup"><span data-stu-id="8e10b-106">In some scenarios, it's inconvenient to flow data from an ancestor component to a descendent component using [component parameters](xref:blazor/components/index#component-parameters), especially when there are several component layers.</span></span> <span data-ttu-id="8e10b-107">値とパラメーターのカスケードによって、先祖コンポーネントがそのすべての子孫コンポーネントに値を提供するための便利な方法を用意することで、この問題が解決されます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-107">Cascading values and parameters solve this problem by providing a convenient way for an ancestor component to provide a value to all of its descendent components.</span></span> <span data-ttu-id="8e10b-108">値とパラメーターのカスケードによって、コンポーネントで調整する方法も得られます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-108">Cascading values and parameters also provide an approach for components to coordinate.</span></span>
+<span data-ttu-id="a5008-108">先祖コンポーネントは、コンポーネント階層のサブツリーをラップし、そのサブツリー内のすべてのコンポーネントに単一の値を提供する Blazor フレームワークの [`CascadingValue`](xref:Microsoft.AspNetCore.Components.CascadingValue%601) コンポーネントを使用して、カスケード値を提供します。</span><span class="sxs-lookup"><span data-stu-id="a5008-108">An ancestor component provides a cascading value using the Blazor framework's [`CascadingValue`](xref:Microsoft.AspNetCore.Components.CascadingValue%601) component, which wraps a subtree of a component hierarchy and supplies a single value to all of the components within its subtree.</span></span>
 
-### <a name="theme-example"></a><span data-ttu-id="8e10b-109">テーマの例</span><span class="sxs-lookup"><span data-stu-id="8e10b-109">Theme example</span></span>
+<span data-ttu-id="a5008-109">次の例では、子コンポーネントのボタンに CSS 形式のクラスを提供する、レイアウト コンポーネントのコンポーネント階層におけるテーマ情報のフローを示しています。</span><span class="sxs-lookup"><span data-stu-id="a5008-109">The following example demonstrates the flow of theme information down the component hierarchy of a layout component to provide a CSS style class to buttons in child components.</span></span>
 
-<span data-ttu-id="8e10b-110">次のサンプル アプリの例では、`ThemeInfo` クラスで、コンポーネント階層の下位に伝達されるテーマ情報を指定して、アプリの特定の部分にあるすべてのボタンが同じスタイルを共有するようにしています。</span><span class="sxs-lookup"><span data-stu-id="8e10b-110">In the following example from the sample app, the `ThemeInfo` class specifies the theme information to flow down the component hierarchy so that all of the buttons within a given part of the app share the same style.</span></span>
+<span data-ttu-id="a5008-110">次の `ThemeInfo` C# クラスは、`UIThemeClasses` という名前のフォルダーに配置され、テーマ情報を指定します。</span><span class="sxs-lookup"><span data-stu-id="a5008-110">The following `ThemeInfo` C# class is placed in a folder named `UIThemeClasses` and specifies the theme information.</span></span>
 
-<span data-ttu-id="8e10b-111">`UIThemeClasses/ThemeInfo.cs`:</span><span class="sxs-lookup"><span data-stu-id="8e10b-111">`UIThemeClasses/ThemeInfo.cs`:</span></span>
+> [!NOTE]
+> <span data-ttu-id="a5008-111">このセクションの例では、アプリの名前空間は `BlazorSample` です。</span><span class="sxs-lookup"><span data-stu-id="a5008-111">For the examples in this section, the app's namespace is `BlazorSample`.</span></span> <span data-ttu-id="a5008-112">自分独自のサンプル アプリでコードを試す場合は、アプリの名前空間をお使いのサンプル アプリの名前空間に変更します。</span><span class="sxs-lookup"><span data-stu-id="a5008-112">When experimenting with the code in your own sample app, change the app's namespace to your sample app's namespace.</span></span>
+
+<span data-ttu-id="a5008-113">`UIThemeClasses/ThemeInfo.cs`:</span><span class="sxs-lookup"><span data-stu-id="a5008-113">`UIThemeClasses/ThemeInfo.cs`:</span></span>
 
 ```csharp
-public class ThemeInfo
+namespace BlazorSample.UIThemeClasses
 {
-    public string ButtonClass { get; set; }
-}
-```
-
-<span data-ttu-id="8e10b-112">先祖コンポーネントでは、Cascading Value コンポーネントを使用してカスケード値を指定できます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-112">An ancestor component can provide a cascading value using the Cascading Value component.</span></span> <span data-ttu-id="8e10b-113"><xref:Microsoft.AspNetCore.Components.CascadingValue%601> コンポーネントは、コンポーネント階層のサブツリーをラップし、そのサブツリー内のすべてのコンポーネントに単一の値を指定します。</span><span class="sxs-lookup"><span data-stu-id="8e10b-113">The <xref:Microsoft.AspNetCore.Components.CascadingValue%601> component wraps a subtree of the component hierarchy and supplies a single value to all components within that subtree.</span></span>
-
-<span data-ttu-id="8e10b-114">たとえば、サンプル アプリでは、アプリのレイアウトの 1 つに、`@Body` プロパティのレイアウト本体を構成するすべてのコンポーネントのカスケード パラメーターとして、テーマ情報 (`ThemeInfo`) を指定しています。</span><span class="sxs-lookup"><span data-stu-id="8e10b-114">For example, the sample app specifies theme information (`ThemeInfo`) in one of the app's layouts as a cascading parameter for all components that make up the layout body of the `@Body` property.</span></span> <span data-ttu-id="8e10b-115">`ButtonClass` には、レイアウト コンポーネント内の `btn-success` の値が割り当てられます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-115">`ButtonClass` is assigned a value of `btn-success` in the layout component.</span></span> <span data-ttu-id="8e10b-116">すべての子孫コンポーネントで、`ThemeInfo` カスケード オブジェクトからこのプロパティを使用できます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-116">Any descendent component can consume this property through the `ThemeInfo` cascading object.</span></span>
-
-<span data-ttu-id="8e10b-117">`CascadingValuesParametersLayout` コンポーネント:</span><span class="sxs-lookup"><span data-stu-id="8e10b-117">`CascadingValuesParametersLayout` component:</span></span>
-
-```razor
-@inherits LayoutComponentBase
-@using BlazorSample.UIThemeClasses
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-3">
-            <NavMenu />
-        </div>
-        <div class="col-sm-9">
-            <CascadingValue Value="theme">
-                <div class="content px-4">
-                    @Body
-                </div>
-            </CascadingValue>
-        </div>
-    </div>
-</div>
-
-@code {
-    private ThemeInfo theme = new ThemeInfo { ButtonClass = "btn-success" };
-}
-```
-
-<span data-ttu-id="8e10b-118">カスケード値を使用するには、コンポーネントで [`[CascadingParameter]`](xref:Microsoft.AspNetCore.Components.CascadingParameterAttribute) 属性を使用してカスケード パラメーターを宣言します。</span><span class="sxs-lookup"><span data-stu-id="8e10b-118">To make use of cascading values, components declare cascading parameters using the [`[CascadingParameter]`](xref:Microsoft.AspNetCore.Components.CascadingParameterAttribute) attribute.</span></span> <span data-ttu-id="8e10b-119">カスケード値は、型によってカスケード パラメーターにバインドされます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-119">Cascading values are bound to cascading parameters by type.</span></span>
-
-<span data-ttu-id="8e10b-120">サンプル アプリでは、`CascadingValuesParametersTheme` コンポーネントによって `ThemeInfo` カスケード値をカスケード パラメーターにバインドしています。</span><span class="sxs-lookup"><span data-stu-id="8e10b-120">In the sample app, the `CascadingValuesParametersTheme` component binds the `ThemeInfo` cascading value to a cascading parameter.</span></span> <span data-ttu-id="8e10b-121">パラメーターは、コンポーネントによって表示されるボタンの 1 つに CSS クラスを設定するために使用されます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-121">The parameter is used to set the CSS class for one of the buttons displayed by the component.</span></span>
-
-<span data-ttu-id="8e10b-122">`CascadingValuesParametersTheme` コンポーネント:</span><span class="sxs-lookup"><span data-stu-id="8e10b-122">`CascadingValuesParametersTheme` component:</span></span>
-
-```razor
-@page "/cascadingvaluesparameterstheme"
-@layout CascadingValuesParametersLayout
-@using BlazorSample.UIThemeClasses
-
-<h1>Cascading Values & Parameters</h1>
-
-<p>Current count: @currentCount</p>
-
-<p>
-    <button class="btn" @onclick="IncrementCount">
-        Increment Counter (Unthemed)
-    </button>
-</p>
-
-<p>
-    <button class="btn @ThemeInfo.ButtonClass" @onclick="IncrementCount">
-        Increment Counter (Themed)
-    </button>
-</p>
-
-@code {
-    private int currentCount = 0;
-
-    [CascadingParameter]
-    protected ThemeInfo ThemeInfo { get; set; }
-
-    private void IncrementCount()
+    public class ThemeInfo
     {
-        currentCount++;
+        public string ButtonClass { get; set; }
     }
 }
 ```
 
-<span data-ttu-id="8e10b-123">同じサブツリー内で同じ型の複数の値をカスケードするには、各 <xref:Microsoft.AspNetCore.Components.CascadingValue%601> コンポーネントとその対応する [`[CascadingParameter]`](xref:Microsoft.AspNetCore.Components.CascadingParameterAttribute) 属性に一意の <xref:Microsoft.AspNetCore.Components.CascadingValue%601.Name%2A> 文字列を指定します。</span><span class="sxs-lookup"><span data-stu-id="8e10b-123">To cascade multiple values of the same type within the same subtree, provide a unique <xref:Microsoft.AspNetCore.Components.CascadingValue%601.Name%2A> string to each <xref:Microsoft.AspNetCore.Components.CascadingValue%601> component and its corresponding [`[CascadingParameter]`](xref:Microsoft.AspNetCore.Components.CascadingParameterAttribute) attribute.</span></span> <span data-ttu-id="8e10b-124">次の例では、2 つの <xref:Microsoft.AspNetCore.Components.CascadingValue%601> コンポーネントで、名前によって `MyCascadingType` の異なるインスタンスをカスケードしています。</span><span class="sxs-lookup"><span data-stu-id="8e10b-124">In the following example, two <xref:Microsoft.AspNetCore.Components.CascadingValue%601> components cascade different instances of `MyCascadingType` by name:</span></span>
+<span data-ttu-id="a5008-114">次の[レイアウト コンポーネント](xref:blazor/layouts)は、<xref:Microsoft.AspNetCore.Components.LayoutComponentBase.Body> プロパティのレイアウト本体を構成するすべてのコンポーネントに、テーマ情報 (`ThemeInfo`) をカスケード値として指定しています。</span><span class="sxs-lookup"><span data-stu-id="a5008-114">The following [layout component](xref:blazor/layouts) specifies theme information (`ThemeInfo`) as a cascading value for all components that make up the layout body of the <xref:Microsoft.AspNetCore.Components.LayoutComponentBase.Body> property.</span></span> <span data-ttu-id="a5008-115">`ButtonClass` には、Bootstrap ボタン形式の [`btn-success`](https://getbootstrap.com/docs/5.0/components/buttons/) 値が割り当てられています。</span><span class="sxs-lookup"><span data-stu-id="a5008-115">`ButtonClass` is assigned a value of [`btn-success`](https://getbootstrap.com/docs/5.0/components/buttons/), which is a Bootstrap button style.</span></span> <span data-ttu-id="a5008-116">`ButtonClass` プロパティは、`ThemeInfo` カスケード値を介し、コンポーネント階層内のすべての子孫コンポーネントで使用できます。</span><span class="sxs-lookup"><span data-stu-id="a5008-116">Any descendent component in the component hierarchy can use the `ButtonClass` property through the `ThemeInfo` cascading value.</span></span>
+
+<span data-ttu-id="a5008-117">`Shared/MainLayout.razor`:</span><span class="sxs-lookup"><span data-stu-id="a5008-117">`Shared/MainLayout.razor`:</span></span>
+
+::: moniker range=">= aspnetcore-5.0"
+
+[!code-razor[](~/blazor/common/samples/5.x/BlazorSample_WebAssembly/Shared/MainLayout.razor?highlight=2,10-14,19)]
+
+::: moniker-end
+
+::: moniker range="< aspnetcore-5.0"
+
+[!code-razor[](~/blazor/common/samples/3.x/BlazorSample_WebAssembly/Shared/MainLayout.razor?highlight=2,9-13,17)]
+
+::: moniker-end
+
+## <a name="cascadingparameter-attribute"></a><span data-ttu-id="a5008-118">`[CascadingParameter]` 属性</span><span class="sxs-lookup"><span data-stu-id="a5008-118">`[CascadingParameter]` attribute</span></span>
+
+<span data-ttu-id="a5008-119">子孫コンポーネントでは、[`[CascadingParameter]` 属性](xref:Microsoft.AspNetCore.Components.CascadingParameterAttribute)を使用してカスケード型パラメーターを宣言し、カスケード値を使用します。</span><span class="sxs-lookup"><span data-stu-id="a5008-119">To make use of cascading values, descendent components declare cascading parameters using the [`[CascadingParameter]` attribute](xref:Microsoft.AspNetCore.Components.CascadingParameterAttribute).</span></span> <span data-ttu-id="a5008-120">カスケード値は、**型で** カスケード型パラメーターにバインドされます。</span><span class="sxs-lookup"><span data-stu-id="a5008-120">Cascading values are bound to cascading parameters **by type**.</span></span> <span data-ttu-id="a5008-121">同じ型の複数の値のカスケードについては、後でこの記事の「[複数の値のカスケード](#cascade-multiple-values)」セクションで説明します。</span><span class="sxs-lookup"><span data-stu-id="a5008-121">Cascading multiple values of the same type is covered in the [Cascade multiple values](#cascade-multiple-values) section later in this article.</span></span>
+
+<span data-ttu-id="a5008-122">次のコンポーネントは、オプションで同じ `ThemeInfo` 名を使用してカスケード型パラメーターに `ThemeInfo` カスケード値をバインドします。</span><span class="sxs-lookup"><span data-stu-id="a5008-122">The following component binds the `ThemeInfo` cascading value to a cascading parameter, optionally using the same name of `ThemeInfo`.</span></span> <span data-ttu-id="a5008-123">このパラメーターは、 **`Increment Counter (Themed)`** ボタンの CSS クラスを設定するのに使用されます。</span><span class="sxs-lookup"><span data-stu-id="a5008-123">The parameter is used to set the CSS class for the **`Increment Counter (Themed)`** button.</span></span>
+
+<span data-ttu-id="a5008-124">`Pages/ThemedCounter.razor`:</span><span class="sxs-lookup"><span data-stu-id="a5008-124">`Pages/ThemedCounter.razor`:</span></span>
+
+::: moniker range=">= aspnetcore-5.0"
+
+[!code-razor[](~/blazor/common/samples/5.x/BlazorSample_WebAssembly/Pages/ThemedCounter.razor?highlight=2,15-17,23-24)]
+
+::: moniker-end
+
+::: moniker range="< aspnetcore-5.0"
+
+[!code-razor[](~/blazor/common/samples/3.x/BlazorSample_WebAssembly/Pages/ThemedCounter.razor?highlight=2,15-17,23-24)]
+
+::: moniker-end
+
+## <a name="cascade-multiple-values"></a><span data-ttu-id="a5008-125">複数の値のカスケード</span><span class="sxs-lookup"><span data-stu-id="a5008-125">Cascade multiple values</span></span>
+
+<span data-ttu-id="a5008-126">同じサブツリー内で同じ型の値を複数カスケードするには、各 [`CascadingValue`](xref:Microsoft.AspNetCore.Components.CascadingValue%601) コンポーネントとそれに対応する [`[CascadingParameter]` 属性](xref:Microsoft.AspNetCore.Components.CascadingParameterAttribute)に一意の <xref:Microsoft.AspNetCore.Components.CascadingValue%601.Name%2A> 文字列を指定します。</span><span class="sxs-lookup"><span data-stu-id="a5008-126">To cascade multiple values of the same type within the same subtree, provide a unique <xref:Microsoft.AspNetCore.Components.CascadingValue%601.Name%2A> string to each [`CascadingValue`](xref:Microsoft.AspNetCore.Components.CascadingValue%601) component and their corresponding [`[CascadingParameter]` attributes](xref:Microsoft.AspNetCore.Components.CascadingParameterAttribute).</span></span>
+
+<span data-ttu-id="a5008-127">次の例では、2 つの [`CascadingValue`](xref:Microsoft.AspNetCore.Components.CascadingValue%601) コンポーネントが、`CascadingType` の異なるインスタンスをカスケードしています。</span><span class="sxs-lookup"><span data-stu-id="a5008-127">In the following example, two [`CascadingValue`](xref:Microsoft.AspNetCore.Components.CascadingValue%601) components cascade different instances of `CascadingType`:</span></span>
 
 ```razor
 <CascadingValue Value="@parentCascadeParameter1" Name="CascadeParam1">
@@ -127,41 +103,145 @@ public class ThemeInfo
 </CascadingValue>
 
 @code {
-    private MyCascadingType parentCascadeParameter1;
+    private CascadingType parentCascadeParameter1;
 
     [Parameter]
-    public MyCascadingType ParentCascadeParameter2 { get; set; }
+    public CascadingType ParentCascadeParameter2 { get; set; }
 
     ...
 }
 ```
 
-<span data-ttu-id="8e10b-125">子孫コンポーネントでは、カスケードされたパラメーターは、それらの値を、名前によって、先祖コンポーネント内の対応するカスケードされた値から受け取ります。</span><span class="sxs-lookup"><span data-stu-id="8e10b-125">In a descendant component, the cascaded parameters receive their values from the corresponding cascaded values in the ancestor component by name:</span></span>
+<span data-ttu-id="a5008-128">子孫コンポーネントで、カスケードされたパラメーターはそれらのカスケードされた値を、次のように <xref:Microsoft.AspNetCore.Components.CascadingValue%601.Name%2A> を使用して、先祖コンポーネントから受け取ります。</span><span class="sxs-lookup"><span data-stu-id="a5008-128">In a descendant component, the cascaded parameters receive their cascaded values from the ancestor component by <xref:Microsoft.AspNetCore.Components.CascadingValue%601.Name%2A>:</span></span>
 
 ```razor
 ...
 
 @code {
     [CascadingParameter(Name = "CascadeParam1")]
-    protected MyCascadingType ChildCascadeParameter1 { get; set; }
+    protected CascadingType ChildCascadeParameter1 { get; set; }
     
     [CascadingParameter(Name = "CascadeParam2")]
-    protected MyCascadingType ChildCascadeParameter2 { get; set; }
+    protected CascadingType ChildCascadeParameter2 { get; set; }
 }
 ```
 
-### <a name="tabset-example"></a><span data-ttu-id="8e10b-126">TabSet の例</span><span class="sxs-lookup"><span data-stu-id="8e10b-126">TabSet example</span></span>
+## <a name="pass-data-across-a-component-hierarchy"></a><span data-ttu-id="a5008-129">コンポーネント階層に渡ってデータを渡す</span><span class="sxs-lookup"><span data-stu-id="a5008-129">Pass data across a component hierarchy</span></span>
 
-<span data-ttu-id="8e10b-127">パラメーターのカスケードによって、コンポーネント階層全体でコンポーネントを連携させることもできます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-127">Cascading parameters also enable components to collaborate across the component hierarchy.</span></span> <span data-ttu-id="8e10b-128">たとえば、サンプル アプリの次の `TabSet` の例を考えてみましょう。</span><span class="sxs-lookup"><span data-stu-id="8e10b-128">For example, consider the following `TabSet` example in the sample app.</span></span>
+<span data-ttu-id="a5008-130">カスケード型パラメーターにより、コンポーネントがコンポーネント階層間でデータを渡せるようにすることもできます。</span><span class="sxs-lookup"><span data-stu-id="a5008-130">Cascading parameters also enable components to pass data across a component hierarchy.</span></span> <span data-ttu-id="a5008-131">タブ セット コンポーネントによって一連の個別タブが維持される、次の UI タブ セットの例を考えてみてください。</span><span class="sxs-lookup"><span data-stu-id="a5008-131">Consider the following UI tab set example, where a tab set component maintains a series of individual tabs.</span></span>
 
-<span data-ttu-id="8e10b-129">このサンプル アプリには、タブに実装されている `ITab` インターフェイスがあります。</span><span class="sxs-lookup"><span data-stu-id="8e10b-129">The sample app has an `ITab` interface that tabs implement:</span></span>
+> [!NOTE]
+> <span data-ttu-id="a5008-132">このセクションの例では、アプリの名前空間は `BlazorSample` です。</span><span class="sxs-lookup"><span data-stu-id="a5008-132">For the examples in this section, the app's namespace is `BlazorSample`.</span></span> <span data-ttu-id="a5008-133">自分独自のサンプル アプリでコードを試す場合は、名前空間をお使いのサンプル アプリの名前空間に変更します。</span><span class="sxs-lookup"><span data-stu-id="a5008-133">When experimenting with the code in your own sample app, change the namespace to your sample app's namespace.</span></span>
 
-[!code-csharp[](../common/samples/5.x/BlazorWebAssemblySample/UIInterfaces/ITab.cs)]
+<span data-ttu-id="a5008-134">`UIInterfaces` という名前のフォルダーに、タブが実装する `ITab` インターフェイスを作成します。</span><span class="sxs-lookup"><span data-stu-id="a5008-134">Create an `ITab` interface that tabs implement in a folder named `UIInterfaces`.</span></span>
 
-<span data-ttu-id="8e10b-130">`CascadingValuesParametersTabSet` コンポーネントでは、いくつかの `Tab` コンポーネントを含む `TabSet` コンポーネントを使用します。</span><span class="sxs-lookup"><span data-stu-id="8e10b-130">The `CascadingValuesParametersTabSet` component uses the `TabSet` component, which contains several `Tab` components:</span></span>
+<span data-ttu-id="a5008-135">`UIInterfaces/ITab.cs`:</span><span class="sxs-lookup"><span data-stu-id="a5008-135">`UIInterfaces/ITab.cs`:</span></span>
+
+```csharp
+using Microsoft.AspNetCore.Components;
+
+namespace BlazorSample.UIInterfaces
+{
+    public interface ITab
+    {
+        RenderFragment ChildContent { get; }
+    }
+}
+```
+
+<span data-ttu-id="a5008-136">一連のタブは、次の `TabSet` コンポーネントによって維持されます。</span><span class="sxs-lookup"><span data-stu-id="a5008-136">The following `TabSet` component maintains a set of tabs.</span></span> <span data-ttu-id="a5008-137">リスト (`<ul>...</ul>`) のリスト項目 (`<li>...</li>`) は、このセクションで後で作成するタブ セットの `Tab` コンポーネントによって提供されます。</span><span class="sxs-lookup"><span data-stu-id="a5008-137">The tab set's `Tab` components, which are created later in this section, supply the list items (`<li>...</li>`) for the list (`<ul>...</ul>`).</span></span>
+
+<span data-ttu-id="a5008-138">子 `Tab` コンポーネントは、`TabSet` にパラメーターとして明示的に渡されません。</span><span class="sxs-lookup"><span data-stu-id="a5008-138">Child `Tab` components aren't explicitly passed as parameters to the `TabSet`.</span></span> <span data-ttu-id="a5008-139">代わりに、子 `Tab` コンポーネントは、`TabSet` の子コンテンツに含まれます。</span><span class="sxs-lookup"><span data-stu-id="a5008-139">Instead, the child `Tab` components are part of the child content of the `TabSet`.</span></span> <span data-ttu-id="a5008-140">ただし、ヘッダーとアクティブなタブをレンダリングできるように、`TabSet` は、各 `Tab` コンポーネントをまだ参照する必要があります。追加のコードを必要とせずにこの調整を可能にするために、`TabSet` コンポーネントでは、*それ自体をカスケード値として指定し*、その後に子孫 `Tab` コンポーネントによって取得できるようにします。</span><span class="sxs-lookup"><span data-stu-id="a5008-140">However, the `TabSet` still needs a reference each `Tab` component so that it can render the headers and the active tab. To enable this coordination without requiring additional code, the `TabSet` component *can provide itself as a cascading value* that is then picked up by the descendent `Tab` components.</span></span>
+
+<span data-ttu-id="a5008-141">`Shared/TabSet.razor`:</span><span class="sxs-lookup"><span data-stu-id="a5008-141">`Shared/TabSet.razor`:</span></span>
 
 ```razor
-@page "/CascadingValuesParametersTabSet"
+@using BlazorSample.UIInterfaces
+
+<!-- Display the tab headers -->
+
+<CascadingValue Value=this>
+    <ul class="nav nav-tabs">
+        @ChildContent
+    </ul>
+</CascadingValue>
+
+<!-- Display body for only the active tab -->
+
+<div class="nav-tabs-body p-4">
+    @ActiveTab?.ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public ITab ActiveTab { get; private set; }
+
+    public void AddTab(ITab tab)
+    {
+        if (ActiveTab == null)
+        {
+            SetActiveTab(tab);
+        }
+    }
+
+    public void SetActiveTab(ITab tab)
+    {
+        if (ActiveTab != tab)
+        {
+            ActiveTab = tab;
+            StateHasChanged();
+        }
+    }
+}
+```
+
+<span data-ttu-id="a5008-142">子孫 `Tab` コンポーネントは、カスケード型パラメーターとして含まれる `TabSet` を取得します。</span><span class="sxs-lookup"><span data-stu-id="a5008-142">Descendent `Tab` components capture the containing `TabSet` as a cascading parameter.</span></span> <span data-ttu-id="a5008-143">`Tab` コンポーネントは、アクティブなタブの設定のために自身を `TabSet` と座標に追加します。</span><span class="sxs-lookup"><span data-stu-id="a5008-143">The `Tab` components add themselves to the `TabSet` and coordinate to set the active tab.</span></span>
+
+<span data-ttu-id="a5008-144">`Shared/Tab.razor`:</span><span class="sxs-lookup"><span data-stu-id="a5008-144">`Shared/Tab.razor`:</span></span>
+
+```razor
+@using BlazorSample.UIInterfaces
+@implements ITab
+
+<li>
+    <a @onclick="ActivateTab" class="nav-link @TitleCssClass" role="button">
+        @Title
+    </a>
+</li>
+
+@code {
+    [CascadingParameter]
+    public TabSet ContainerTabSet { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private string TitleCssClass => 
+        ContainerTabSet.ActiveTab == this ? "active" : null;
+
+    protected override void OnInitialized()
+    {
+        ContainerTabSet.AddTab(this);
+    }
+
+    private void ActivateTab()
+    {
+        ContainerTabSet.SetActiveTab(this);
+    }
+}
+```
+
+<span data-ttu-id="a5008-145">次の `ExampleTabSet` コンポーネントは、3 つの `Tab` コンポーネントを含む `TabSet` コンポーネントを使用しています。</span><span class="sxs-lookup"><span data-stu-id="a5008-145">The following `ExampleTabSet` component uses the `TabSet` component, which contains three `Tab` components.</span></span>
+
+<span data-ttu-id="a5008-146">`Pages/ExampleTabSet.razor`:</span><span class="sxs-lookup"><span data-stu-id="a5008-146">`Pages/ExampleTabSet.razor`:</span></span>
+
+```razor
+@page "/example-tab-set"
 
 <TabSet>
     <Tab Title="First tab">
@@ -172,8 +252,9 @@ public class ThemeInfo
             Toggle third tab
         </label>
     </Tab>
+
     <Tab Title="Second tab">
-        <h4>The second tab says Hello World!</h4>
+        <h4>Hello from the second tab!</h4>
     </Tab>
 
     @if (showThirdTab)
@@ -189,15 +270,3 @@ public class ThemeInfo
     private bool showThirdTab;
 }
 ```
-
-<span data-ttu-id="8e10b-131">子 `Tab` コンポーネントは、パラメーターとして `TabSet` に明示的に渡されません。</span><span class="sxs-lookup"><span data-stu-id="8e10b-131">The child `Tab` components aren't explicitly passed as parameters to the `TabSet`.</span></span> <span data-ttu-id="8e10b-132">代わりに、子 `Tab` コンポーネントは、`TabSet` の子コンテンツに含まれます。</span><span class="sxs-lookup"><span data-stu-id="8e10b-132">Instead, the child `Tab` components are part of the child content of the `TabSet`.</span></span> <span data-ttu-id="8e10b-133">ただし、`TabSet` は、ヘッダーとアクティブなタブをレンダリングできるように、各 `Tab` コンポーネントについて認識している必要があります。追加のコードを必要とせずにこの調整を可能にするために、`TabSet` コンポーネントでは、*それ自体をカスケード値として指定し*、その後に子孫 `Tab` コンポーネントによって取得できるようにします。</span><span class="sxs-lookup"><span data-stu-id="8e10b-133">However, the `TabSet` still needs to know about each `Tab` component so that it can render the headers and the active tab. To enable this coordination without requiring additional code, the `TabSet` component *can provide itself as a cascading value* that is then picked up by the descendent `Tab` components.</span></span>
-
-<span data-ttu-id="8e10b-134">`TabSet` コンポーネント:</span><span class="sxs-lookup"><span data-stu-id="8e10b-134">`TabSet` component:</span></span>
-
-[!code-razor[](../common/samples/5.x/BlazorWebAssemblySample/Components/TabSet.razor)]
-
-<span data-ttu-id="8e10b-135">子孫の `Tab` コンポーネントでは、含まれている `TabSet` をカスケード パラメーターとしてキャプチャするため、`Tab` コンポーネントはそれ自体を `TabSet` に追加し、どのタブをアクティブにするかを調整します。</span><span class="sxs-lookup"><span data-stu-id="8e10b-135">The descendent `Tab` components capture the containing `TabSet` as a cascading parameter, so the `Tab` components add themselves to the `TabSet` and coordinate on which tab is active.</span></span>
-
-<span data-ttu-id="8e10b-136">`Tab` コンポーネント:</span><span class="sxs-lookup"><span data-stu-id="8e10b-136">`Tab` component:</span></span>
-
-[!code-razor[](../common/samples/5.x/BlazorWebAssemblySample/Components/Tab.razor)]
