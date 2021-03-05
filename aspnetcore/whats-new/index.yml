@@ -5,18 +5,20 @@ metadata:
   title: ASP.NET Core ドキュメント - 新機能
   description: ASP.NET Core ドキュメントの新しいコンテンツと更新されたコンテンツについて説明します。
   ms.topic: landing-page
-  ms.date: 02/01/2021
-  ms.openlocfilehash: 0b7f3ab27f31417b3e6b17bf9d4c31ec96129f1e
-  ms.sourcegitcommit: 75db2f684a9302b0be7925eab586aa091c6bd19f
+  ms.date: 03/04/2021
+  ms.openlocfilehash: a4ef3edbf260c6f2ee34ac739884bd9a605bd396
+  ms.sourcegitcommit: 3982ff9dabb5b12aeb0a61cde2686b5253364f5d
   ms.translationtype: HT
   ms.contentlocale: ja-JP
-  ms.lasthandoff: 02/01/2021
-  ms.locfileid: "99238293"
+  ms.lasthandoff: 03/04/2021
+  ms.locfileid: "102119007"
 landingContent:
 - title: ASP.NET Core ドキュメントの更新内容の検索
   linkLists:
   - linkListType: whats-new
     links:
+    - text: 2021 年 2 月
+      url: 2021-02.md
     - text: 2021 年 1 月
       url: 2021-01.md
     - text: 2020 年 12 月
@@ -27,8 +29,6 @@ landingContent:
       url: 2020-10.md
     - text: 2020 年 9 月
       url: 2020-09.md
-    - text: 2020 年 8 月
-      url: 2020-08.md
 - title: 参加しよう - ASP.NET Core ドキュメントへの投稿
   linkLists:
   - linkListType: overview
